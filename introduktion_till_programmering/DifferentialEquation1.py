@@ -19,6 +19,6 @@ y = odeint(model,y0,t)
 
 # plotta resultat
 plt.plot(t,y)
-plt.xlabel('time')
-plt.ylabel('y(t)')
+plt.xlabel('time') #ange labeln för x-axeln
+plt.ylabel('y(t)') #ange labeln för y-axeln
 plt.show()

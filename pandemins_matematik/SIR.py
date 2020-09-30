@@ -5,13 +5,16 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
+
 #funktion som returnerar listan dz/dt=[dsdt, didt, drdt]. Löser SIR-modellen
 def model(z,t):
     s = z[0]
     i = z[1]
     r = z[2]
-    b = 0.12 #ange värdet på b (antal smittosamma kontakter)
-    k = 0.04 #ange värdet på k (andelen som tillfrisknar varje dag)
+    #ange värdet på b (antal smittosamma kontakter) & k (andelen som tillfrisknar varje dag)
+    b = 0.2
+    k = 0.04 #k=1/D där D är antal dagar en person är infekterad i snitt
+    #R_0 = b/k
     dsdt = -b*s*i
     didt = b*s*i-k*i
     drdt = k*i
@@ -25,7 +28,7 @@ z0 = [1,0.0002,0]
 n = 365
 
 #skapar en lista med tidpunkterna [0, 1, 2, 3, ..., 363, 364]
-t = np.linspace(0,n,n)
+t = np.linspace(0,n-1,n)
 
 #löser SIR-modellen
 solution = odeint(model, z0, t)
@@ -47,6 +50,6 @@ plt.plot(t, r_solution,'purple',label='r(t)')
 
 plt.xlabel("Dagar")
 plt.ylabel("Andel")
-plt.legend(loc='best') #väljer den 'bästa platsen för linjebeskrivningarna'
-plt.savefig("SIRexempel.png")
+plt.legend(loc='best') #väljer den 'bästa' platsen för linjebeskrivningarna
+#plt.savefig("SIRexempel.png")
 plt.show()
