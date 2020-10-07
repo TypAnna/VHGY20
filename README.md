@@ -5,4 +5,4 @@ I mappen `introduktion_till_programmering` finner du alla python-filer som ger e
 
 I mappen `pandemins_matematik` finns script för att lösa SIR-modellen och rita dessa lösningar, i `SIR.py`, samt exempel på hur en kan göra för att plotta riktig data, i `PlotCovid.py`. För att plotta riktiga data använder vi oss utav filen `owid-covid-data.csv`, som är hämtad [härifrån](https://github.com/owid/covid-19-data/tree/master/public/data).
 
-[Detta](https://apmonitor.com/pdc/index.php/Main/SolveDifferentialEquations) kan du i sin tur kika på om du vill ha inspiration på hur du kan modifiera/leka med SIR-modellen (notera dock att de använder en variant av SIR).
+[Detta](https://python.quantecon.org/sir_model.html) kan du i sin tur kika på om du vill ha inspiration på hur du kan modifiera/leka med SIR-modellen (notera dock att de använder en variant av SIR).
