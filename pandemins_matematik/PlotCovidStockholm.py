@@ -11,6 +11,10 @@ from pylab import rcParams
 
     Det totala antalet fall varje dag, är det totala antalet fall från föregående
     dag + nya fall. Denna lista skapar vi enligt nedan.
+
+    VIKTIGT: notera att vi även här (precis som i PlotCovid2.py) har ett stort
+    mörkertal. Datan vi har är enbart de rapporterade fallen. De som har haft
+    Covid med inte testat sig finns inte med i datan.
 '''
 sthlm_data = []
 file = open("StockholmCovid.txt", "r") #öppnar textfilen
