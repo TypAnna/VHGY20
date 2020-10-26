@@ -5,9 +5,9 @@ from scipy.integrate import odeint
 from numpy import exp
 from pylab import rcParams
 
-''' Textfilen StockholmCovid.txt innehåller antalet nya rapporterade fall i
+''' Textfilen StockholmCovid.csv innehåller antalet nya rapporterade fall i
     Stockholm per dag. Från detta skapar vi en lista som innehåller de totala
-    antalet fall varje dag.
+    antalet fall varje dag. Se till så att du har laddat ner denna fil.
 
     Det totala antalet fall varje dag, är det totala antalet fall från föregående
     dag + nya fall. Denna lista skapar vi enligt nedan.
@@ -16,17 +16,20 @@ from pylab import rcParams
     mörkertal. Datan vi har är enbart de rapporterade fallen. De som har haft
     Covid med inte testat sig finns inte med i datan.
 '''
-sthlm_data = []
-file = open("StockholmCovid.txt", "r") #öppnar textfilen
-prev_total = 0
-for row in file: #läser in textfilen rad för rad. varje rad innehåller en siffra
-    new_cases = int(row.replace("\n", "")) #vi behöver städa upp vår rad, som står som en sträng, följt av ett 'enter'-tecken (='\n')
-    curr_total = prev_total + new_cases #totala antalet fall idag = totala antalet fall igår + antal nya fall idag
-    prev_total = curr_total
-    sthlm_data.append(curr_total)
 
-file.close() #stäng läsaren
-#print(sthlm_data)
+#se till så att du har filen StockholmCovid.csv nedladdad i samma mapp som du har denna fil i
+df = pd.read_csv('StockholmCovid.csv', parse_dates=['date']) #läser in data
+
+#fixa till stockholmsdatan...
+sthlm_data = []
+prev_total = 0
+for index, row in df.iterrows():
+    curr_total = prev_total + row['new_cases'] #totala antalet fall idag = totala antalet fall igår + antal nya fall idag
+    sthlm_data.append(curr_total)
+    prev_total = curr_total
+
+df['total_cases'] = sthlm_data #... och spara denna 'nya' data i vår data frame
+#print(df)
 
 
 ''' Vår SIR-model där vi kan applya restriktioner, lik filen SIR_restrictions.py.
@@ -79,7 +82,7 @@ N = 974000 #befolkning i Stockholm enligt https://start.stockholm/om-stockholms-
 z0 = [N-1,1,0]
 
 #antal tidpunkter (dagar) vi vill lösa differentialakvationen för
-number_of_days = len(sthlm_data) #så många dagar vi har covid-19 data för
+number_of_days = len(df.index) #så många dagar vi har covid-19 data för
 
 #skapar en lista med tidpunkterna [0, 1, 2, 3, ..., number_of_days-1]
 t = np.linspace(0,number_of_days-1,number_of_days)
@@ -100,19 +103,22 @@ solution2 = odeint(model, z0, t, args=(b1, False, 150, 60, b1, b_min)) #utan res
 solution1_r = solution1[:, 2]
 solution1_i = solution1[:, 1]
 solution1_r_plus_i = solution1_r + solution1_i
+df['theoretical_cases1'] = solution1_r_plus_i
 #print(ri_solution1)
 
 #lösning 2
 solution2_r = solution2[:, 2]
 solution2_i = solution2[:, 1]
 solution2_r_plus_i = solution2_r + solution2_i
+df['theoretical_cases2'] = solution2_r_plus_i
 #print(ri_solution2)
 
-rcParams['figure.figsize'] = 10, 7 #sätt (bredd, höjd) på figuren till (10, 7)
-#plotta all data
-plt.plot(t, solution1_r_plus_i, color='orange', label = 'Teoretiskt antal fall, scenario 1')
-plt.plot(t, solution2_r_plus_i, color='purple', label = 'Teoretiskt antal fall, scenario 2')
-plt.plot(t, sthlm_data, color='pink',label="Totalt antal rapporterade fall Stockholm")
+print(df)
+
+ax = plt.gca()
+df.plot(kind='line', x='date', y='theoretical_cases1', ax=ax, color='orange', label = 'Teoretiskt antal fall, scenario 1')
+df.plot(kind='line', x='date', y='theoretical_cases2', ax=ax, color='purple', label = 'Teoretiskt antal fall, scenario 2')
+df.plot(kind='line', x='date', y='total_cases', ax=ax, color='pink', figsize=(10,7), label="Totalt antal rapporterade fall")
 
 plt.legend(loc='best') #väljer den 'bästa' platsen för linjebeskrivningarna
 plt.ylabel("Antal")
