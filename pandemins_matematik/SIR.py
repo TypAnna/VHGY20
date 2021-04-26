@@ -44,9 +44,10 @@ i_solution = solution[:, 1] #vi hämtar alla element på plats två i varje list
 r_solution = solution[:, 2] #vi hämtar alla element på plats tre i varje lista i solution
 
 #plotta de tre linjerna
-plt.plot(t, s_solution,'pink',label='s(t)')
-plt.plot(t, i_solution,'orange',label='i(t)')
-plt.plot(t, r_solution,'purple',label='r(t)')
+plt.rcParams.update({'font.size': 19})
+plt.plot(t, s_solution,'pink',label='s(t)',linewidth=3)
+plt.plot(t, i_solution,'orange',label='i(t)',linewidth=3)
+plt.plot(t, r_solution,'purple',label='r(t)',linewidth=3)
 
 plt.xlabel("Dagar")
 plt.ylabel("Andel")
